@@ -14,15 +14,7 @@ stages:
 - stage: Build
   displayName: 'Construir aplicación'
   jobs:
-  - job: "Logindocker"
-    steps:
-    - script: |
-        echo "Logging in to Docker Hub..."
-        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      displayName: 'Login to Docker Hub'
-      env:
-        DOCKER_USERNAME: $(USER)
-        DOCKER_PASSWORD: $(PASSWORD)
+
   - job: BuildApp
     steps:
     - script: |
@@ -70,6 +62,15 @@ stages:
   displayName: 'Construir y subir imagen Docker'
   #dependsOn: SonarQube
   jobs:
+  - job: "Logindocker"
+    steps:
+    - script: |
+        echo "Logging in to Docker Hub..."
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      displayName: 'Login to Docker Hub'
+      env:
+        DOCKER_USERNAME: $(USER)
+        DOCKER_PASSWORD: $(PASSWORD)  
   - job: BuildAndPushDocker
     steps:
     - script: |
