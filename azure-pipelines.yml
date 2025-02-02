@@ -10,13 +10,19 @@ variables:
   dockerRegistry: 'juancifu31/images-app'
   k8sNamespace: 'default'
 
-#   steps:
-# - stage: Build
-#     displayName: 'Construir aplicación'
 stages:
 - stage: Build
   displayName: 'Construir aplicación'
   jobs:
+  - job: "Logindocker"
+    steps:
+    - script: |
+        echo "Logging in to Docker Hub..."
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      displayName: 'Login to Docker Hub'
+      env:
+        DOCKER_USERNAME: $(USER)
+        DOCKER_PASSWORD: $(PASSWORD)
   - job: BuildApp
     steps:
     - script: |
