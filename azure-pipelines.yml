@@ -62,7 +62,7 @@ stages:
   displayName: 'Construir y subir imagen Docker'
   #dependsOn: SonarQube
   jobs:
-  - job: "Logindocker"
+  - job: BuildAndPushDocker
     steps:
     - script: |
         echo "Logging in to Docker Hub..."
@@ -70,9 +70,7 @@ stages:
       displayName: 'Login to Docker Hub'
       env:
         DOCKER_USERNAME: $(USER)
-        DOCKER_PASSWORD: $(PASSWORD)  
-  - job: BuildAndPushDocker
-    steps:
+        DOCKER_PASSWORD: $(PASSWORD)      
     - script: |
         echo "Etiquetando imagen Docker..."
         docker tag $(imageName):$(imageTag) $(dockerRegistry)/$(imageName):$(imageTag)
