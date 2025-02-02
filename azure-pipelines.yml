@@ -1,0 +1,101 @@
+trigger:
+- main
+
+jobs:
+- job: CreateMinikubeCluster
+  pool:
+    name: Local-Agent-Pool
+
+variables:
+  imageName: 'hola-mundo-app'
+  imageTag: '1.0'
+  dockerRegistry: 'juancifu31/images-app'
+  k8sNamespace: 'default'
+
+stages:
+- stage: Build
+  displayName: 'Construir aplicación'
+  jobs:
+  - job: BuildApp
+    steps:
+    - script: |
+        echo "Construyendo la aplicación..."
+        docker build -t $(imageName):$(imageTag) .
+      displayName: 'Construir imagen Docker'
+
+- stage: Test
+  displayName: 'Ejecutar pruebas unitarias'
+  dependsOn: Build
+  jobs:
+  - job: RunTests
+    steps:
+    - script: |
+        echo "Ejecutando pruebas unitarias..."
+        # Aquí puedes agregar comandos para ejecutar pruebas (ejemplo: Jest, Mocha)
+      displayName: 'Pruebas unitarias'
+
+# - stage: SonarQube
+#   displayName: 'Análisis de calidad con SonarQube'
+#   dependsOn: Test
+#   jobs:
+#   - job: SonarAnalysis
+#     steps:
+#     - task: SonarQubePrepare@5
+#       inputs:
+#         SonarQube: '<sonarqube-service-connection>'
+#         scannerMode: 'CLI'
+#         configMode: 'manual'
+#         cliProjectKey: 'hola-mundo-app'
+#         cliProjectName: 'Hola Mundo App'
+#         extraProperties: |
+#           sonar.sources=.
+#           sonar.language=web
+#           sonar.sourceEncoding=UTF-8
+#     - script: |
+#         echo "Ejecutando análisis de SonarQube..."
+#         sonar-scanner
+#       displayName: 'Ejecutar SonarQube'
+#     - task: SonarQubePublish@5
+#       inputs:
+#         pollingTimeoutSec: '300'
+
+- stage: Docker
+  displayName: 'Construir y subir imagen Docker'
+  dependsOn: SonarQube
+  jobs:
+  - job: BuildAndPushDocker
+    steps:
+    - script: |
+        echo "Etiquetando imagen Docker..."
+        docker tag $(imageName):$(imageTag) $(dockerRegistry)/$(imageName):$(imageTag)
+      displayName: 'Etiquetar imagen Docker'
+    - script: |
+        echo "Subiendo imagen a Docker Registry..."
+        docker push $(dockerRegistry)/$(imageName):$(imageTag)
+      displayName: 'Subir imagen a Docker Registry'
+
+- stage: Deploy
+  displayName: 'Desplegar en Kubernetes'
+  dependsOn: Docker
+  jobs:
+  - job: DeployToKubernetes
+    steps:
+    - task: Kubernetes@1
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: '<k8s-service-connection>'
+        namespace: '$(k8sNamespace)'
+        command: 'apply'
+        arguments: '-f deployment.yaml'
+      displayName: 'Desplegar aplicación en Kubernetes'
+
+- stage: TestConnectivity
+  displayName: 'Probar conectividad'
+  dependsOn: Deploy
+  jobs:
+  - job: TestConnection
+    steps:
+    - script: |
+        echo "Probando conectividad con curl..."
+        curl http://<minikube-ip>:30001
+      displayName: 'Prueba de conectividad'
