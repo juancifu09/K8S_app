@@ -7,9 +7,10 @@ pool:
 variables:
   imageName: 'hola-mundo-app'
   imageTag: '1.0'
-  dockerRegistry: 'juancifu31/images-app'
+  dockerRegistry: 'juancifu31'
   k8sNamespace: 'default'
-
+  containerRegistry: 'docker-hub-connection'
+  Dockerfile: '**/Dockerfile'  
 stages:
 - stage: Build
   displayName: 'Construir aplicación'
@@ -74,7 +75,7 @@ stages:
     - script: |
         echo "Etiquetando imagen Docker..."
         docker tag $(imageName):$(imageTag) $(dockerRegistry)/$(imageName):$(imageTag)
-      displayName: 'Etiquetar imagen Docker'
+      displayName: 'Etiquetar imagen Docker'  
     - script: |
         echo "Subiendo imagen a Docker Registry..."
         docker push $(dockerRegistry)/$(imageName):$(imageTag)
