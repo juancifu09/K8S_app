@@ -90,9 +90,6 @@ stages:
     - script: |
         kubectl get po --all-namespaces
         kubectl apply -f ./deployment/deployment_app.yaml
-        minikube ip
-        MINIKUBE_IP=$(minikube ip)
-        echo "##vso[task.setvariable variable=minikubeIp]$MINIKUBE_IP"
 - stage: TestConnectivity
   displayName: 'Probar conectividad'
   dependsOn: Deploy
@@ -101,5 +98,7 @@ stages:
     steps:
     - script: |
         echo "Probando conectividad con curl..."
+        MINIKUBE_IP=$(minikube ip)
+        echo "##vso[task.setvariable variable=minikubeIp]$MINIKUBE_IP"
         curl http://$(MINIKUBE_IP):30001
       displayName: 'Prueba de conectividad'
