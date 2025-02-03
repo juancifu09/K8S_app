@@ -88,10 +88,6 @@ stages:
   - job: DeployToKubernetes
     steps:
     - bash: echo "Antes de comenzar"
-    - bash: mkdir ~/.kube
-    - bash: echo "$(kubeconfig_k3s.secureFilePath)"
-    - bash: env
-    - bash: cat $KUBECONFIG_K3S_SECUREFILEPATH >  ~/.kube/config
     - bash: kubectl cluster-info
     - bash: kubectl get po --all-namespaces  
 #       inputs:
