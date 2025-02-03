@@ -81,13 +81,22 @@ stages:
         docker push $(dockerRegistry)/$(imageName):$(imageTag)
       displayName: 'Subir imagen a Docker Registry'
 
-# - stage: Deploy
-#   displayName: 'Desplegar en Kubernetes'
-#   dependsOn: Docker
-#   jobs:
-#   - job: DeployToKubernetes
-#     steps:
-#     - task: Kubernetes@1
+- stage: Deploy
+  displayName: 'Desplegar en Kubernetes'
+  dependsOn: Docker
+  jobs:
+  - job: DeployToKubernetes
+    steps:
+    - task: Kubernetes@1
+      displayName: Download secure file kubeconfig_k3s
+      name: kubeconfig_k3s
+    - bash: echo "Antes de comenzar"
+    - bash: mkdir ~/.kube
+    - bash: echo "$(kubeconfig_k3s.secureFilePath)"
+    - bash: env
+    - bash: cat $KUBECONFIG_K3S_SECUREFILEPATH >  ~/.kube/config
+    - bash: kubectl cluster-info
+    - bash: kubectl get po --all-namespaces  
 #       inputs:
 #         connectionType: 'Kubernetes Service Connection'
 #         kubernetesServiceEndpoint: '<k8s-service-connection>'
