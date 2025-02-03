@@ -90,23 +90,16 @@ stages:
     - script: |
         kubectl get po --all-namespaces
         kubectl apply -f ./deployment/deployment_app.yaml
-
-
-#       inputs:
-#         connectionType: 'Kubernetes Service Connection'
-#         kubernetesServiceEndpoint: '<k8s-service-connection>'
-#         namespace: '$(k8sNamespace)'
-#         command: 'apply'
-#         arguments: '-f deployment.yaml'
-#       displayName: 'Desplegar aplicación en Kubernetes'
-
-# - stage: TestConnectivity
-#   displayName: 'Probar conectividad'
-#   dependsOn: Deploy
-#   jobs:
-#   - job: TestConnection
-#     steps:
-#     - script: |
-#         echo "Probando conectividad con curl..."
-#         curl http://<minikube-ip>:30001
-#       displayName: 'Prueba de conectividad'
+        minikube ip
+        MINIKUBE_IP=$(minikube ip)
+        echo "##vso[task.setvariable variable=minikubeIp]$MINIKUBE_IP"
+- stage: TestConnectivity
+  displayName: 'Probar conectividad'
+  dependsOn: Deploy
+  jobs:
+  - job: TestConnection
+    steps:
+    - script: |
+        echo "Probando conectividad con curl..."
+        curl http://$(minikubeIp):30001
+      displayName: 'Prueba de conectividad'
