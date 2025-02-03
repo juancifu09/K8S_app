@@ -87,9 +87,6 @@ stages:
   jobs:
   - job: DeployToKubernetes
     steps:
-    - task: Kubernetes@1
-      displayName: Download secure file kubeconfig_k3s
-      name: kubeconfig_k3s
     - bash: echo "Antes de comenzar"
     - bash: mkdir ~/.kube
     - bash: echo "$(kubeconfig_k3s.secureFilePath)"
