@@ -101,5 +101,5 @@ stages:
     steps:
     - script: |
         echo "Probando conectividad con curl..."
-        curl http://$(minikubeIp):30001
+        curl http://$(MINIKUBE_IP):30001
       displayName: 'Prueba de conectividad'
