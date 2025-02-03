@@ -87,9 +87,11 @@ stages:
   jobs:
   - job: DeployToKubernetes
     steps:
-    - bash: echo "Antes de comenzar"
-    - bash: kubectl cluster-info
-    - bash: kubectl get po --all-namespaces  
+    - script: |
+        kubectl get po --all-namespaces
+        kubectl apply -f ./k8s/deployment_app.yaml
+
+
 #       inputs:
 #         connectionType: 'Kubernetes Service Connection'
 #         kubernetesServiceEndpoint: '<k8s-service-connection>'
