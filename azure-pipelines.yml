@@ -89,7 +89,7 @@ stages:
     steps:
     - script: |
         kubectl get po --all-namespaces
-        kubectl apply -f ./k8s/deployment_app.yaml
+        kubectl apply -f ./deployment/deployment_app.yaml
 
 
 #       inputs:
