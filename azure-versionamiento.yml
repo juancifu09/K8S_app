@@ -15,6 +15,7 @@ steps:
     echo "Obteniendo el último tag del repositorio..."
     # Obtener el último tag existente
     LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+    git tag
     echo "Último tag encontrado: $LAST_TAG"
 
     # Extraer los números de versión del último tag
