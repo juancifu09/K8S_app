@@ -36,6 +36,7 @@ steps:
     git config --global user.email "juanchiviris2271@hotmail.com"
     git config --global user.name "juancifu09"
     git tag $(newVersion)
+    git remote set-url origin https://$(Build.Repository.Name):$(System.GITHUB_TOKEN)@github.com/$(Build.Repository.Name).git
     git push origin $(newVersion)
   displayName: "Crear y Subir Tag"
   env:
