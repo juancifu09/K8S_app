@@ -33,8 +33,8 @@ steps:
 
 - script: |
     echo "Creando un nuevo tag con la versión $(newVersion)..."
-    git config --global user.email "azure-devops@example.com"
-    git config --global user.name "Azure DevOps"
+    git config --global user.email "juanchiviris2271@hotmail.com"
+    git config --global user.name "juancifu09"
     git tag $(newVersion)
     git push origin $(newVersion)
   displayName: "Crear y Subir Tag"
