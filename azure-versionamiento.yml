@@ -36,7 +36,7 @@ steps:
     git config --global user.email "juanchiviris2271@hotmail.com"
     git config --global user.name "juancifu09"
     git tag $(newVersion)
-    
+    git remote set-url origin https://$(GITHUB_TOKEN)@github.com/$(Build.Repository.Name).git
     git push origin $(newVersion)
     curl -X POST -H "Authorization: token $(GITHUB_TOKEN)" \
       -d "{\"tag_name\":\"$(newVersion)\",\"name\":\"$(newVersion)\",\"body\":\"Release de versión $(newVersion)\",\"draft\":false,\"prerelease\":false}" \
