@@ -39,4 +39,4 @@ steps:
     git push origin $(newVersion)
   displayName: "Crear y Subir Tag"
   env:
-    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    SYSTEM_ACCESSTOKEN: $(GITHUB_TOKEN)
