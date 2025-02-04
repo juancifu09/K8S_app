@@ -36,8 +36,11 @@ steps:
     git config --global user.email "juanchiviris2271@hotmail.com"
     git config --global user.name "juancifu09"
     git tag $(newVersion)
-    git remote set-url origin https://@github.com/$(Build.Repository.Name):$(GITHUB_TOKEN)
+    
     git push origin $(newVersion)
+    curl -X POST -H "Authorization: token $(GITHUB_TOKEN)" \
+      -d "{\"tag_name\":\"$(newVersion)\",\"name\":\"$(newVersion)\",\"body\":\"Release de versión $(newVersion)\",\"draft\":false,\"prerelease\":false}" \
+      https://api.github.com/repos/juancifu09/K8S_app/releases
   displayName: "Crear y Subir Tag"
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
