@@ -1,6 +1,6 @@
 trigger:
-  branches:
-    include:
+  #branches:
+    #include:
       - main
 
 pool:
